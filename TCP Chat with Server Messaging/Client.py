@@ -1,8 +1,7 @@
 import socket
 import threading
 
-# Change this to the server's IPv4 address
-SERVER_IP = "192.168.1.10"  # Example
+SERVER_IP = input("Enter server IPv4 address: ").strip()
 PORT = 5555
 
 nickname = input("Choose your nickname: ")
@@ -18,15 +17,20 @@ def receive():
                 client.send(nickname.encode("utf-8"))
             else:
                 print(message)
-        except:
-            print("An error occurred!")
+        except Exception as e:
+            print(f"An error occurred: {e}")
             client.close()
             break
 
 def write():
     while True:
-        message = f"{nickname}: {input('')}"
-        client.send(message.encode("utf-8"))
+        try:
+            msg_text = input("")
+            message = f"{nickname}: {msg_text}"
+            client.send(message.encode("utf-8"))
+        except Exception as e:
+            print(f"Send error: {e}")
+            break
 
 receive_thread = threading.Thread(target=receive)
 receive_thread.start()
