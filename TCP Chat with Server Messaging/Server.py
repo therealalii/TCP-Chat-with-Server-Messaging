@@ -11,7 +11,7 @@ def receive_messages(conn):
         try:
             msg = conn.recv(1024).decode()
             if msg:
-                print("\n" + msg)  # Already contains client's nickname
+                print("\n" + msg)  
             else:
                 break
         except:
@@ -37,7 +37,7 @@ def main():
     conn, addr = server.accept()
     print(f"Connected by {addr}")
 
-    # دو thread برای ارسال و دریافت پیام‌ها
+    
     receive_thread = threading.Thread(target=receive_messages, args=(conn,))
     send_thread = threading.Thread(target=send_messages, args=(conn,))
 
@@ -50,3 +50,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
