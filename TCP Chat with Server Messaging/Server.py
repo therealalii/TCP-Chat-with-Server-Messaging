@@ -1,51 +1,52 @@
 import socket
 import threading
 
-HOST = "0.0.0.0"  # Listen on all network interfaces
+HOST = ''
 PORT = 5555
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((HOST, PORT))
-server.listen()
+nickname = input("Enter your server nickname: ")
 
-clients = []
-nicknames = []
-
-def broadcast(message):
-    for client in clients:
-        client.send(message)
-
-def handle(client):
+def receive_messages(conn):
     while True:
         try:
-            msg = client.recv(1024)
+            msg = conn.recv(1024).decode()
             if msg:
-                broadcast(msg)
+                print("\n" + msg)  # Already contains client's nickname
+            else:
+                break
         except:
-            index = clients.index(client)
-            clients.remove(client)
-            client.close()
-            nickname = nicknames[index]
-            broadcast(f"{nickname} left the chat.\n".encode("utf-8"))
-            nicknames.remove(nickname)
             break
 
-def receive():
-    print(f"Server is running on {HOST}:{PORT} ...")
+def send_messages(conn):
     while True:
-        client, address = server.accept()
-        print(f"Connected with {address}")
+        msg = input()
+        if msg.lower() == 'exit':
+            print("Shutting down server...")
+            conn.close()
+            break
+        try:
+            conn.send(f"{nickname}: {msg}".encode())
+        except:
+            break
 
-        client.send("NICK".encode("utf-8"))
-        nickname = client.recv(1024).decode("utf-8")
-        nicknames.append(nickname)
-        clients.append(client)
+def main():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((HOST, PORT))
+    server.listen(1)
+    print(f"Server listening on port {PORT}...")
+    conn, addr = server.accept()
+    print(f"Connected by {addr}")
 
-        print(f"Nickname is {nickname}")
-        broadcast(f"{nickname} joined the chat!\n".encode("utf-8"))
-        client.send("Connected to the server!\n".encode("utf-8"))
+    # دو thread برای ارسال و دریافت پیام‌ها
+    receive_thread = threading.Thread(target=receive_messages, args=(conn,))
+    send_thread = threading.Thread(target=send_messages, args=(conn,))
 
-        thread = threading.Thread(target=handle, args=(client,))
-        thread.start()
+    receive_thread.start()
+    send_thread.start()
 
-receive()
+    receive_thread.join()
+    send_thread.join()
+    server.close()
+
+if __name__ == "__main__":
+    main()
