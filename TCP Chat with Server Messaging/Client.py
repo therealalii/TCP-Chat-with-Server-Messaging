@@ -1,33 +1,41 @@
 import socket
 import threading
 
-SERVER_IP = input("Enter server IPv4 address: ").strip()
+HOST = input("Enter server IP address: ")
 PORT = 5555
-nickname = input("Choose your nickname: ")
+nickname = input("Enter your nickname: ")
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((SERVER_IP, PORT))
-
-def receive():
+def receive_messages(sock):
     while True:
         try:
-            message = client.recv(1024).decode('utf-8')
-            if message == 'NICK':
-                client.send(nickname.encode('utf-8'))
+            msg = sock.recv(1024).decode()
+            if msg:
+                print("\n" + msg)  # Already contains nickname
             else:
-                print(message)
+                break
         except:
-            print("You have been disconnected from the server.")
-            client.close()
             break
 
-def write():
+def main():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect((HOST, PORT))
+
+    receive_thread = threading.Thread(target=receive_messages, args=(client,))
+    receive_thread.daemon = True
+    receive_thread.start()
+
+    print("Connected to chat. Type messages and press Enter to send. Type 'exit' to quit.")
+
     while True:
+        message = input()
+        if message.lower() == 'exit':
+            break
         try:
-            message = f"{nickname}: {input('')}"
-            client.send(message.encode('utf-8'))
+            client.send(f"{nickname}: {message}".encode())
         except:
             break
 
-threading.Thread(target=receive).start()
-threading.Thread(target=write).start()
+    client.close()
+
+if __name__ == "__main__":
+    main()
