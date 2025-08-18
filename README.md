@@ -40,5 +40,6 @@ This project is a simple TCP chat application in Python where both the server an
 
 **Note:**  
 Make sure firewall settings allow communication on port `5555`.  
-Both server and client must be on the same network or have network access to each other.
+Both server and client must be on the same network or have network access to each other.<img width="1920" height="1080" alt="Screenshot (147)" src="https://github.com/user-attachments/assets/84a3ec1e-637e-47de-967d-b6b615661b81" />
+
 
