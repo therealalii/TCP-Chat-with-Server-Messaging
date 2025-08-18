@@ -45,6 +45,8 @@ Both server and client must be on the same network or have network access to eac
 ---
 
 **Image of the chat:**
-<img width="1920" height="1080" alt="Screenshot (148)" src="https://github.com/user-attachments/assets/f590c7c4-06c3-4f0f-b2e2-e90fb2f24382" />
+
+<img width="1920" height="1080" alt="Screenshot (159)" <img width="1920" height="1080" alt="Screenshot (160)" src="https://github.com/user-attachments/assets/aab2458d-bfe1-4393-9b58-9e7b9ea0546d" />
+src="https://github.com/user-attachments/assets/8bc150dd-a717-465a-87b4-66a194b53866" />
 
 
